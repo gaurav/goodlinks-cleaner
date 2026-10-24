@@ -103,4 +103,4 @@ Tracked as issues; the list here is only a pointer.
 - [#7](https://github.com/gaurav/goodlinks-cleaner/issues/7) Faster full sync.
 - [#8](https://github.com/gaurav/goodlinks-cleaner/issues/8) `glc undo` over the audit log.
 - [#9](https://github.com/gaurav/goodlinks-cleaner/issues/9) Re-download paywalled Economist and Washington Post articles with a subscription.
-- Optional, cheap-model classification using the cached article text (not yet filed).
+- [#10](https://github.com/gaurav/goodlinks-cleaner/issues/10) Optional, cheap-model classification using the cached article text.
