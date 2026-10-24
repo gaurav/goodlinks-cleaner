@@ -23,20 +23,30 @@ def repo_root() -> Path:
     return Path.cwd()
 
 
+API_PATH = "/api/v1"
+
+
 @dataclass(frozen=True)
 class Settings:
-    api_url: str
+    api_address: str  # what GoodLinks → Settings → API calls "Address", e.g. http://localhost:9428
     api_token: str
     db_path: Path
 
+    @property
+    def api_url(self) -> str:
+        """Versioned base URL for API calls."""
+        return self.api_address.rstrip("/") + API_PATH
+
     @classmethod
-    def load(cls) -> "Settings":
+    def load(cls) -> Settings:
         root = repo_root()
         load_dotenv(root / ".env")
-        api_url = os.environ.get("GOODLINKS_API_URL", "http://localhost:9428/api/v1").rstrip("/")
+        api_address = os.environ.get("GOODLINKS_API_ADDRESS", "http://localhost:9428").rstrip("/")
+        # Tolerate someone pasting the full versioned URL.
+        api_address = api_address.removesuffix(API_PATH)
         api_token = os.environ.get("GOODLINKS_API_TOKEN", "")
         db_raw = os.environ.get("GLC_DB_PATH", "data/goodlinks.sqlite")
         db_path = Path(db_raw)
         if not db_path.is_absolute():
             db_path = root / db_path
-        return cls(api_url=api_url, api_token=api_token, db_path=db_path)
+        return cls(api_address=api_address, api_token=api_token, db_path=db_path)
