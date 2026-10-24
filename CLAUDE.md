@@ -46,6 +46,10 @@ Conventions that must hold for every new command:
   this library; YouTube's `v` and Facebook's `u` are meaningful and must be kept.
 - Median cached word count per host is a paywall detector: economist.com 114,
   washingtonpost.com 84, facebook.com 7.
+- `fetch-missing` (content with `autoDownload=true`) is synchronous and recomputes
+  `wordCount`, but only ~4 in 100 null-wordCount links come back with text; the rest are dead
+  hosts (1843magazine.com, pocket.co) or paywalls (economist.com). Treat
+  `content_probe.status='missing'` after a download attempt as a dead-link candidate.
 - A 5xx, timeout or bot-wall when resolving a shortener is transient; only 404/410 and DNS
   failure are treated as dead.
 

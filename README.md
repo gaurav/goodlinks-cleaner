@@ -46,7 +46,7 @@ Run `uv run glc --help`, or `uv run glc <command> --help` for options. All actio
 | `glc dupes` | Same article saved several times with different tracking parameters. Keeps the copy with the most signal (read, starred, tagged, highlighted), merges the others' tags into it, trashes the rest. |
 | `glc collapsed` | Links whose URL now points at a shared landing page (a site died and Pocket stored the redirect target, keeping the title). Reported and tagged `status/collapsed`, never deduplicated, since the title is all that is left. |
 | `glc empty` | Links with no or almost no article text, grouped by host so single-page apps and paywalls stand out. `--probe` asks GoodLinks for each cached text and classifies it; `--apply` tags them `status/empty`. |
-| `glc fetch-missing` | Asks GoodLinks to download text for links it never fetched, so "no word count" becomes a real number. Follow with `glc sync`. |
+| `glc fetch-missing` | Asks GoodLinks to download text for links it never fetched, so "no word count" becomes a real number. In practice only ~4% succeed: most of the 8,500 unread links without a word count are on dead or paywalled sites, so a `missing` result after this is a strong dead-link signal. |
 | `glc shorteners` | Links on redirect services (pocket.co, t.co, bit.ly …). `--resolve` follows them; `--apply` replaces each with its destination (same tags, same date) and trashes the shortener. pocket.co no longer resolves at all; those get `status/dead-shortener`, or are trashed with `--delete-unresolvable`. |
 
 ### Making the backlog tractable
