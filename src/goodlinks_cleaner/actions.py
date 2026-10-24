@@ -197,6 +197,13 @@ def probe_content(client: GoodLinksClient, conn: sqlite3.Connection, rows: list[
             sample = body[:200]
             status = "empty" if chars < 200 or _SHELL_RE.match(body) else "cached"
         counts[status] += 1
+        if auto_download and text is not None:
+            # GoodLinks has just downloaded the article and recomputed wordCount;
+            # pull the fresh row so the cache does not wait for the next full sync.
+            try:
+                db.upsert_links(conn, [client.get_link(row["id"])], db.now_iso())
+            except GoodLinksError:
+                pass
         conn.execute(
             "INSERT INTO content_probe (link_id, status, chars, sample, probed_at) VALUES (?,?,?,?,?) "
             "ON CONFLICT(link_id) DO UPDATE SET status=excluded.status, chars=excluded.chars, "
