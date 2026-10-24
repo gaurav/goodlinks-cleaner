@@ -93,8 +93,14 @@ duckdb -c "INSTALL sqlite; LOAD sqlite; ATTACH 'data/goodlinks.sqlite' AS gl (TY
 
 ## Roadmap
 
-- `glc check`: dead-link checker with Wayback Machine lookup (tag `status/dead` / `status/archived`).
-- Clean up Pocket-era tags (`ifttt`, `safari-reading-list`, truncated feed names).
-- Year and media tags (`year/2016`, `media/video`).
-- Scheduled delivery of `glc random` picks by email.
-- Optional, cheap-model classification using the cached article text.
+Tracked as issues; the list here is only a pointer.
+
+- [#2](https://github.com/gaurav/goodlinks-cleaner/issues/2) `glc check`: dead-link checker with Wayback Machine lookup.
+- [#3](https://github.com/gaurav/goodlinks-cleaner/issues/3) Recover collapsed links from their titles via Wayback.
+- [#4](https://github.com/gaurav/goodlinks-cleaner/issues/4) Pocket-era provenance tags (`ifttt`, feed names) as `source/` tags and priority signals.
+- [#5](https://github.com/gaurav/goodlinks-cleaner/issues/5) Video tags and drain-to-zero `clean/` queues for tweets, Facebook posts, shorteners.
+- [#6](https://github.com/gaurav/goodlinks-cleaner/issues/6) Scheduled delivery of `glc random` picks by email.
+- [#7](https://github.com/gaurav/goodlinks-cleaner/issues/7) Faster full sync.
+- [#8](https://github.com/gaurav/goodlinks-cleaner/issues/8) `glc undo` over the audit log.
+- [#9](https://github.com/gaurav/goodlinks-cleaner/issues/9) Re-download paywalled Economist and Washington Post articles with a subscription.
+- Optional, cheap-model classification using the cached article text (not yet filed).
