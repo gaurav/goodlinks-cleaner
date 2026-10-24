@@ -40,7 +40,7 @@ CREATE INDEX IF NOT EXISTS links_word_count ON links(word_count);
 
 CREATE TABLE IF NOT EXISTS content_probe (
     link_id    TEXT PRIMARY KEY REFERENCES links(id),
-    status     TEXT NOT NULL,    -- cached | missing | empty
+    status     TEXT NOT NULL,    -- cached | missing | empty | error (GoodLinks timed out)
     chars      INTEGER,
     sample     TEXT,             -- first ~200 chars, for eyeballing SPA shells
     probed_at  TEXT NOT NULL

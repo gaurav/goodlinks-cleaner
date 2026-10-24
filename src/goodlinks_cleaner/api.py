@@ -78,6 +78,8 @@ class GoodLinksClient:
                 f"Could not connect to GoodLinks at {self._client.base_url}. "
                 "Is GoodLinks running with API access enabled?"
             ) from e
+        except httpx.TimeoutException as e:
+            raise GoodLinksError(f"{method} {path}: timed out") from e
         if resp.status_code == 401:
             raise AuthError("GoodLinks rejected the API token (401). Check GOODLINKS_API_TOKEN.")
         if resp.status_code == 404:
@@ -134,13 +136,19 @@ class GoodLinksClient:
                 return
             offset += PAGE_SIZE
 
-    def content(self, link_id: str, fmt: str = "plaintext", auto_download: bool = False) -> str | None:
-        """Article text, or None if nothing is cached (and auto_download is False)."""
+    def content(self, link_id: str, fmt: str = "plaintext", auto_download: bool = False,
+                timeout: float | None = None) -> str | None:
+        """Article text, or None if nothing is cached (and auto_download is False).
+
+        With auto_download GoodLinks fetches the page synchronously, so a dead host
+        can hang for a long time; pass a shorter timeout for bulk runs.
+        """
         try:
             resp = self._request(
                 "GET",
                 f"/links/{link_id}/content",
                 params={"format": fmt, "autoDownload": "true" if auto_download else "false"},
+                **({"timeout": timeout} if timeout else {}),
             )
         except NotFound:
             return None

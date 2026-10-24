@@ -181,13 +181,22 @@ def probe_content(client: GoodLinksClient, conn: sqlite3.Connection, rows: list[
     With auto_download=True GoodLinks fetches articles it has never downloaded,
     which is how null wordCounts get filled in; follow with `glc sync`.
     """
-    counts = {"cached": 0, "missing": 0, "empty": 0, "error": 0}
+    counts = {"cached": 0, "missing": 0, "empty": 0, "error": 0}  # error = GoodLinks timed out
     todo = rows if limit is None else rows[:limit]
     for i, row in enumerate(todo, 1):
         try:
-            text = client.content(row["id"], "plaintext", auto_download=auto_download)
-        except GoodLinksError:
+            text = client.content(row["id"], "plaintext", auto_download=auto_download,
+                                  timeout=30.0 if auto_download else None)
+        except GoodLinksError as e:
+            # Usually GoodLinks timing out on a dead host. Record it so the link is
+            # not retried on every run; `DELETE FROM content_probe WHERE status='error'` to retry.
             counts["error"] += 1
+            conn.execute(
+                "INSERT INTO content_probe (link_id, status, chars, sample, probed_at) VALUES (?,?,?,?,?) "
+                "ON CONFLICT(link_id) DO UPDATE SET status=excluded.status, sample=excluded.sample, "
+                "probed_at=excluded.probed_at",
+                (row["id"], "error", None, str(e)[:200], db.now_iso()),
+            )
             continue
         if text is None:
             status, chars, sample = "missing", None, None
